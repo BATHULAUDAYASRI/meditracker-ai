@@ -1,0 +1,1 @@
+fastapi>=0.109.0,<1.0\nuvicorn[standard]>=0.27.0,<1.0\npydantic>=2.6.0,<3.0\npydantic-settings>=2.0.0,<3.0\npython-multipart>=0.0.9,<1.0\nopenai>=1.0.0,<2.0\n

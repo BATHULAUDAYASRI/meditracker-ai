@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediTracker AI</title>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediTrack AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c1222;
+      --surface: #141c2f;
+      --surface2: #1a2438;
+      --border: #2a3754;
+      --text: #e8ecf4;
+      --muted: #8b9ab8;
+      --accent: #2dd4bf;
+      --accent-dim: #115e59;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --ok: #4ade80;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(45, 212, 191, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 212, 191, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-dim), #134e4a);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 1.25rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.15rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    select:focus, input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #243049;
+      border-color: #3d4d6e;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, #14b8a6, #0d9488);
+      border-color: #0f766e;
+      color: #042f2e;
+    }
+
+    button.primary:hover:not(:disabled) {
+      filter: brightness(1.05);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stat {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .stat .v {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .stat .k {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-wrap {
+      margin-top: 0.75rem;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar > div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .mono { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .tag.pending { background: rgba(251, 191, 36, 0.15); color: var(--warn); }
+    .tag.ok { background: rgba(74, 222, 128, 0.12); color: var(--ok); }
+    .tag.bad { background: rgba(248, 113, 113, 0.12); color: var(--danger); }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .action-type {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .action-type button[data-active="true"] {
+      border-color: var(--accent);
+      background: rgba(45, 212, 191, 0.12);
+      color: var(--accent);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .last-step {
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 0.75rem;
+      background: var(--surface2);
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+    }
+
+    .last-step strong { color: var(--text); }
+
+    .error {
+      color: var(--danger);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+
+    .pill {
+      padding: 0.2rem 0.55rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.8rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">💊</div>
+        <div>
+          <h1>MediTrack AI</h1>
+          <p class="subtitle">Medication scheduling simulator · OpenEnv API</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="field">
+          <label for="task">Task</label>
+          <select id="task" title="Episode task">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button type="button" class="primary" id="btnReset">New episode</button>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button type="button" id="btnRefresh">Refresh state</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Episode</h2>
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Simulated time</div>
+            <div class="v" id="clock">0</div>
+            <div class="k">minutes</div>
+          </div>
+          <div class="stat">
+            <div class="k">Step</div>
+            <div class="v" id="stepCount">0</div>
+            <div class="k" id="stepMax">/ —</div>
+          </div>
+          <div class="stat">
+            <div class="k">Total reward</div>
+            <div class="v" id="totalReward">0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Difficulty</div>
+            <div class="v" id="difficulty" style="font-size:1rem;color:var(--text);">—</div>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:0.35rem;">
+            <span>Steps used</span>
+            <span id="progressLabel">0%</span>
+          </div>
+          <div class="progress-bar"><div id="progressFill" style="width:0%"></div></div>
+        </div>
+        <p style="margin-top:1rem;font-size:0.85rem;color:var(--muted);" id="taskId"></p>
+      </div>
+
+      <div class="card">
+        <h2>Status</h2>
+        <p style="font-size:0.85rem;margin-bottom:0.75rem;">Pending (due now)</p>
+        <div class="pill-list" id="pendingList"><span class="muted">—</span></div>
+        <p style="font-size:0.85rem;margin:0.75rem 0 0.35rem;">Taken doses</p>
+        <div class="pill-list" id="takenList"><span style="color:var(--muted)">None yet</span></div>
+        <p style="font-size:0.85rem;margin:0.75rem 0 0.35rem;">Missed events</p>
+        <div class="pill-list" id="missedList"><span style="color:var(--muted)">None</span></div>
+        <p id="doneBanner" style="display:none;margin-top:1rem;padding:0.6rem;border-radius:8px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35);color:var(--ok);font-weight:600;">
+          Episode complete — all medications finished.
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h2>Medications</h2>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Next due (min)</th>
+              <th>Interval</th>
+              <th>Doses left</th>
+              <th>Satisfied</th>
+              <th>Miss penalty</th>
+            </tr>
+          </thead>
+          <tbody id="medTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:1rem;">
+      <div class="card actions">
+        <h2>Action</h2>
+        <div class="action-type" id="actionTypes">
+          <button type="button" data-type="remind" data-active="true">Remind</button>
+          <button type="button" data-type="skip">Skip</button>
+          <button type="button" data-type="reschedule">Reschedule</button>
+        </div>
+        <div id="fieldsRemind" class="row">
+          <div class="field">
+            <label for="medName">Medication</label>
+            <input type="text" id="medName" placeholder="e.g. Aspirin" autocomplete="off" />
+          </div>
+        </div>
+        <div id="fieldsReschedule" class="row" style="display:none;">
+          <div class="field">
+            <label for="rescheduleMins">Minutes from now</label>
+            <input type="number" id="rescheduleMins" min="0" value="30" />
+          </div>
+        </div>
+        <button type="button" class="primary" id="btnStep" style="align-self:flex-start;">Apply &amp; step</button>
+        <p class="error" id="errMsg" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>Last transition</h2>
+        <div class="last-step" id="lastStep">
+          Run <strong>New episode</strong> or <strong>Refresh state</strong> to load the server.
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      API: <span class="mono">GET /reset</span> · <span class="mono">POST /step</span> · <span class="mono">GET /state</span>
+    </footer>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    let totalReward = 0;
+    let episodeDone = false;
+    let actionType = "remind";
+
+    function apiBase() {
+      return "";
+    }
+
+    async function doReset() {
+      $("errMsg").hidden = true;
+      totalReward = 0;
+      const task = $("task").value;
+      const r = await fetch(apiBase() + "/reset?task=" + encodeURIComponent(task));
+      if (!r.ok) throw new Error(await r.text());
+      const obs = await r.json();
+      render(obs, null, null);
+    }
+
+    async function doState() {
+      $("errMsg").hidden = true;
+      const r = await fetch(apiBase() + "/state");
+      if (!r.ok) throw new Error(await r.text());
+      const obs = await r.json();
+      render(obs, null, null);
+    }
+
+    function setActionType(t) {
+      actionType = t;
+      document.querySelectorAll("#actionTypes button").forEach((b) => {
+        b.dataset.active = b.dataset.type === t ? "true" : "false";
+      });
+      $("fieldsRemind").style.display = t === "skip" ? "none" : "flex";
+      $("fieldsReschedule").style.display = t === "reschedule" ? "flex" : "none";
+      if (t === "skip") $("medName").value = "";
+    }
+
+    document.querySelectorAll("#actionTypes button").forEach((b) => {
+      b.addEventListener("click", () => setActionType(b.dataset.type));
+    });
+
+    function buildAction() {
+      if (actionType === "skip") {
+        return { type: "skip", medication: null, reschedule_minutes: null };
+      }
+      const med = $("medName").value.trim();
+      if (actionType === "remind") {
+        return { type: "remind", medication: med || null, reschedule_minutes: null };
+      }
+      const mins = parseInt($("rescheduleMins").value, 10);
+      return {
+        type: "reschedule",
+        medication: med || null,
+        reschedule_minutes: Number.isFinite(mins) ? mins : null,
+      };
+    }
+
+    async function doStep() {
+      $("errMsg").hidden = true;
+      if (episodeDone) {
+        $("errMsg").textContent = "Episode already finished. Start a new episode.";
+        $("errMsg").hidden = false;
+        return;
+      }
+      const body = buildAction();
+      const r = await fetch(apiBase() + "/step", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) {
+        const t = await r.text();
+        $("errMsg").textContent = t || "Request failed";
+        $("errMsg").hidden = false;
+        return;
+      }
+      const data = await r.json();
+      totalReward += data.reward.value;
+      render(data.observation, data.reward, data.info, data.done);
+    }
+
+    function render(obs, reward, info, doneOverride) {
+      if (doneOverride !== undefined && doneOverride !== null) {
+        episodeDone = !!doneOverride;
+      } else {
+        episodeDone = !!obs.all_complete || obs.step_count >= obs.max_steps;
+      }
+
+      $("clock").textContent = obs.current_time_minute;
+      $("stepCount").textContent = obs.step_count;
+      $("stepMax").textContent = "/ " + obs.max_steps;
+      $("difficulty").textContent = obs.difficulty;
+      $("taskId").textContent = "Task: " + obs.task_id;
+
+      const pct = obs.max_steps ? Math.min(100, (obs.step_count / obs.max_steps) * 100) : 0;
+      $("progressFill").style.width = pct + "%";
+      $("progressLabel").textContent = Math.round(pct) + "%";
+
+      $("totalReward").textContent = totalReward.toFixed(2);
+
+      const pend = obs.pending_medications || [];
+      const pendEl = $("pendingList");
+      pendEl.innerHTML = "";
+      if (pend.length === 0) {
+        pendEl.innerHTML = '<span style="color:var(--muted)">None</span>';
+      } else {
+        pend.forEach((p) => {
+          const s = document.createElement("span");
+          s.className = "pill";
+          s.textContent = p;
+          pendEl.appendChild(s);
+        });
+      }
+
+      const taken = obs.taken_doses || [];
+      const takenEl = $("takenList");
+      takenEl.innerHTML = "";
+      if (taken.length === 0) takenEl.innerHTML = '<span style="color:var(--muted)">None yet</span>';
+      else taken.forEach((p) => {
+        const s = document.createElement("span");
+        s.className = "pill";
+        s.textContent = p;
+        takenEl.appendChild(s);
+      });
+
+      const missed = obs.missed_doses || [];
+      const missEl = $("missedList");
+      missEl.innerHTML = "";
+      if (missed.length === 0) missEl.innerHTML = '<span style="color:var(--muted)">None</span>';
+      else missed.forEach((p) => {
+        const s = document.createElement("span");
+        s.className = "pill";
+        s.textContent = p;
+        missEl.appendChild(s);
+      });
+
+      $("doneBanner").style.display = episodeDone ? "block" : "none";
+
+      const tbody = $("medTable");
+      tbody.innerHTML = "";
+      (obs.medications || []).forEach((m) => {
+        const tr = document.createElement("tr");
+        const sat = m.current_dose_satisfied
+          ? '<span class="tag ok">Yes</span>'
+          : '<span class="tag" style="background:#243049;color:var(--muted)">No</span>';
+        const mp = m.missed_penalty_applied
+          ? '<span class="tag bad">Applied</span>'
+          : '<span class="tag" style="background:#243049;color:var(--muted)">—</span>';
+        tr.innerHTML =
+          '<td><strong>' +
+          escapeHtml(m.name) +
+          "</strong></td>" +
+          '<td class="mono">' +
+          m.next_due_minute +
+          "</td>" +
+          '<td class="mono">' +
+          m.interval_minutes +
+          "</td>" +
+          '<td class="mono">' +
+          m.doses_remaining +
+          "</td>" +
+          "<td>" +
+          sat +
+          "</td>" +
+          "<td>" +
+          mp +
+          "</td>";
+        tbody.appendChild(tr);
+      });
+
+      if (reward && info) {
+        const correct = info.action_correct === true;
+        const inv = info.invalid === true;
+        $("lastStep").innerHTML =
+          "<div>Reward: <strong>" +
+          reward.value.toFixed(2) +
+          "</strong></div>" +
+          "<div style='margin-top:0.35rem'>Done: <strong>" +
+          (episodeDone ? "yes" : "no") +
+          "</strong></div>" +
+          "<div style='margin-top:0.35rem'>Action correct: <strong>" +
+          (correct ? "yes" : "no") +
+          "</strong>" +
+          (inv ? " <span class='tag bad'>invalid</span>" : "") +
+          "</div>" +
+          "<div style='margin-top:0.5rem;font-size:0.8rem;color:var(--muted);' class='mono'>" +
+          escapeHtml(JSON.stringify(info)) +
+          "</div>";
+      } else if (!reward && !info) {
+        $("lastStep").innerHTML =
+          "<strong>Episode loaded.</strong> Choose Remind / Skip / Reschedule, then <strong>Apply &amp; step</strong>.";
+      }
+
+      $("btnStep").disabled = episodeDone;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    $("btnReset").addEventListener("click", () => doReset().catch((e) => showErr(e)));
+    $("btnRefresh").addEventListener("click", () => doState().catch((e) => showErr(e)));
+    $("btnStep").addEventListener("click", () => doStep().catch((e) => showErr(e)));
+
+    function showErr(e) {
+      $("errMsg").textContent = e.message || String(e);
+      $("errMsg").hidden = false;
+    }
+
+    window.addEventListener("load", () => {
+      doReset().catch((e) => {
+        $("lastStep").innerHTML =
+          "<strong>Could not reach API.</strong> Start the server: <span class='mono'>uvicorn api.main:app --reload --port 7860</span><br/><br/>" +
+          escapeHtml(e.message || String(e));
+      });
+    });
+  </script>
+</body>
+</html>

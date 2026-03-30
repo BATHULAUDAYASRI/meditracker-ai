@@ -1,0 +1,35 @@
+# OpenEnv-style descriptor for MediTrack AI
+name: meditrack-ai
+display_name: MediTrack AI
+version: 1.0.0
+description: >
+  Simulated medication management: reminders, missed doses, rescheduling,
+  and multi-step scheduling under time pressure.
+
+environment:
+  entrypoint: app.env:MediTrackEnv
+  methods:
+    reset: reset
+    step: step
+    state: state
+
+models:
+  observation: app.models:Observation
+  action: app.models:Action
+  reward: app.models:Reward
+
+tasks:
+  easy: easy_remind_all
+  medium: medium_missed_reschedule
+  hard: hard_multi_penalty
+
+api:
+  framework: fastapi
+  module: api.main:app
+  host: 0.0.0.0
+  port: 7860
+
+constraints:
+  cpu_max: 2
+  memory_gb: 8
+  deterministic: true
