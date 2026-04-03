@@ -38,15 +38,20 @@ app.include_router(pharmacies_router)
 app.include_router(orders_router)
 app.include_router(chat_router)
 
-_static_dir = Path(__file__).resolve().parent / "static"
-if _static_dir.exists():
-    assets_dir = _static_dir / "assets"
+root_dir = Path(__file__).resolve().parents[2]  # repo root
+app_static_dir = Path(__file__).resolve().parent / "static"  # set by Docker
+repo_frontend_dist_dir = root_dir / "frontend" / "dist"  # local dev helper
+
+static_dir = app_static_dir if app_static_dir.exists() else repo_frontend_dist_dir
+
+if (static_dir / "index.html").exists():
+    assets_dir = static_dir / "assets"
     if assets_dir.exists():
         app.mount("/assets", StaticFiles(directory=assets_dir), name="static-assets")
 
     @app.get("/")
     def serve_frontend() -> FileResponse:
-        return FileResponse(_static_dir / "index.html")
+        return FileResponse(static_dir / "index.html")
 
 
 @app.get("/health")

@@ -1,0 +1,36 @@
+# Full-stack MediTrack AI: ONE URL for UI + API (no separate nginx container).
+# Commands:
+#   docker compose -f docker-compose.node.yml up --build
+# Browser:
+#   http://localhost:8080
+# (Do not use :5173 or :5000 for Docker — only :8080.)
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: meditrack-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: meditrack-web
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    environment:
+      PORT: "8080"
+      MONGO_URI: mongodb://mongo:27017/meditrack_ai
+      STATIC_DIR: /app/static
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+
+volumes:
+  mongo_data:

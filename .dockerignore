@@ -1,0 +1,12 @@
+# Build context for Dockerfile.node (repo root). Keeps images small and fast.
+**/node_modules
+**/dist
+.git
+venv
+.venv
+**/__pycache__
+*.pyc
+server/uploads
+client/.env
+server/.env
+.env

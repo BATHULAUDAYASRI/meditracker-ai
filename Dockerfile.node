@@ -1,0 +1,24 @@
+# One image: React build + Express API on ONE port (no nginx between browser and API).
+# Run: docker compose -f docker-compose.node.yml up --build
+# Open: http://localhost:8080
+
+FROM node:20-alpine AS client-build
+WORKDIR /client
+COPY client/package*.json ./
+RUN npm install --no-audit --no-fund
+COPY client/ .
+# Same-origin /api in production (api.js uses window.location.origin + '/api')
+ARG VITE_API_URL=
+ENV VITE_API_URL=$VITE_API_URL
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY server/package*.json ./
+RUN npm install --no-audit --no-fund
+COPY server/ .
+COPY --from=client-build /client/dist ./static
+ENV STATIC_DIR=/app/static
+ENV PORT=8080
+EXPOSE 8080
+CMD ["npm", "start"]

@@ -19,9 +19,9 @@ def nearby_pharmacies(lat: float | None, lng: float | None, radius_km: float) ->
     base_lng = lng if lng is not None else 77.5946
     rng = random.Random(int(base_lat * 1000 + base_lng * 1000))
     base = [
-        {"id": "ph1", "name": "CityCare Pharmacy", "rating": 4.6, "address": "Main St, Downtown", "phone": "+1-555-0101"},
-        {"id": "ph2", "name": "Wellness Rx", "rating": 4.2, "address": "Oak Ave & 3rd", "phone": "+1-555-0102"},
-        {"id": "ph3", "name": "HealthPlus Meds", "rating": 4.8, "address": "Market Road, Block B", "phone": "+1-555-0103"},
+        {"id": "ph1", "name": "WellCare Pharmacy", "rating": 4.6, "address": "Main St, Downtown", "phone": "+1-555-0101"},
+        {"id": "ph2", "name": "HealthPlus Pharmacy", "rating": 4.8, "address": "Market Road, Block B", "phone": "+1-555-0102"},
+        {"id": "ph3", "name": "CityMed Pharmacy", "rating": 4.2, "address": "Oak Ave & 3rd", "phone": "+1-555-0103"},
         {"id": "ph4", "name": "MedStar Pharmacy", "rating": 3.9, "address": "Lake View, Sector 8", "phone": "+1-555-0104"},
     ]
     out = []
